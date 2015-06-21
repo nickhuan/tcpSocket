@@ -32,15 +32,17 @@ tcpClient::~tcpClient()
 {
 }
 
-// void tcpClient::readMsg(const std::string& msg)
-// {
-//   if ((n = read(sockfd, msg.c_str(), msg.length())) < 0)
-//     dieWithError("Error reading from Socket");
-// }
 void tcpClient::sendMsg(const std::string& msg)
 {
   if ((n = write(sockfd, msg.c_str(), msg.length())) < 0)
     dieWithError("Error writing to Socket");
+}
+
+void tcpClient::readMsg(char buffer[BUFLEN])
+{
+  bzero(buffer, BUFLEN);
+  if ((n = read(sockfd, buffer, BUFLEN)) < 0)
+    dieWithError("Error reading from socket");
 }
 
 void tcpClient::closeConnection()

@@ -18,14 +18,14 @@ public:
   tcpServer(int PORT);
   ~tcpServer();
   void sendMsg(const std::string& msg);
+  static const int BUFLEN = 512;
+  void readMsg(char buffer[BUFLEN]);
   void closeConnection();
   void dieWithError(const char *s);
   int n;
   int sockfd, newsockfd;
-  static const int BUFLEN = 512;
 private:
   socklen_t clilen;
-  char buffer[BUFLEN];
   struct sockaddr_in serv_addr, cli_addr;
 };
 

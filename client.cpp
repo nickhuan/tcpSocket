@@ -33,6 +33,9 @@ int main( int argc, char** argv )
 {
   /* TCP Client Setup */
   tcpClient client("127.0.0.1", 9999);
-
+  int BUFLEN = 512;
+  char buffer[BUFLEN];
+  client.readMsg(buffer);
+  cout << "message received: " << buffer << endl;
   return 0;
 }

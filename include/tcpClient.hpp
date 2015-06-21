@@ -18,13 +18,13 @@ class tcpClient
 public:
   tcpClient(const char *ipAddress, int PORT);
   ~tcpClient();
-  // void readMsg(const std::string& msg);
   void sendMsg(const std::string& msg);
+  static const int BUFLEN = 512;
+  void readMsg(char buffer[BUFLEN]);
   void closeConnection();
   void dieWithError(const char *s);
   int n;
   int sockfd;
-  static const int BUFLEN = 512;
 private:
   socklen_t clilen;
   char buffer[BUFLEN];
