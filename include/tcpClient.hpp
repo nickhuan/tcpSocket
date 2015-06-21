@@ -18,9 +18,11 @@ class tcpClient
 public:
   tcpClient(const char *ipAddress, int PORT);
   ~tcpClient();
-  void sendMsg(const std::string& msg);
   static const int BUFLEN = 512;
-  void readMsg(char buffer[BUFLEN]);
+  void sendMsg(const std::string& msg);
+  void receiveMsg(char buffer[BUFLEN]);
+  void sendPacket(const void *packet, size_t packetSize);
+  void receivePacket(void *buffer, size_t bufferSize);
   void closeConnection();
   void dieWithError(const char *s);
   int n;

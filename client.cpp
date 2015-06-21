@@ -8,9 +8,16 @@ using namespace std;
 using namespace cv;
 
 /* Struct and Class */
+struct test
+{
+  int x = 0;
+  int y = 0;
+  int idx = 0;
+  bool flag = 0;
+};
 struct DavisKeypoint
 {
-  Point2i coordinate = Point2i(0,0);
+  Point2f coordinate = Point2f(0,0);
   int idx = 0;
 };
 enum FrameType {
@@ -33,9 +40,18 @@ int main( int argc, char** argv )
 {
   /* TCP Client Setup */
   tcpClient client("127.0.0.1", 9999);
+
   int BUFLEN = 512;
   char buffer[BUFLEN];
-  client.readMsg(buffer);
+  client.receiveMsg(buffer);
   cout << "message received: " << buffer << endl;
+
+  test testPacket;
+  struct test structTest;
+  cout << "size of packet:" << sizeof(testPacket) << endl;
+  client.sendPacket(&testPacket, sizeof(testPacket));
+
+  client.closeConnection();
+
   return 0;
 }

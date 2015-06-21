@@ -20,12 +20,6 @@ tcpClient::tcpClient(const char *ipAddress, int PORT)
   serv_addr.sin_port = htons(PORT);
   if (connect(sockfd,(struct sockaddr *) &serv_addr,sizeof(serv_addr)) < 0) 
       this->dieWithError("ERROR connecting");
-
-  // bzero(buffer, BUFLEN);
-  // if ((n = read(sockfd, buffer, BUFLEN)) < 0)
-  //   this->dieWithError("Error reading from socket");
-  // printf("-> Received packet from %s:%d\n", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
-  // printf("-> Data: %s\n", buffer);
 }
 
 tcpClient::~tcpClient()
@@ -35,14 +29,27 @@ tcpClient::~tcpClient()
 void tcpClient::sendMsg(const std::string& msg)
 {
   if ((n = write(sockfd, msg.c_str(), msg.length())) < 0)
-    dieWithError("Error writing to Socket");
+    dieWithError("Error writing message to socket");
 }
 
-void tcpClient::readMsg(char buffer[BUFLEN])
+void tcpClient::receiveMsg(char buffer[BUFLEN])
 {
   bzero(buffer, BUFLEN);
   if ((n = read(sockfd, buffer, BUFLEN)) < 0)
-    dieWithError("Error reading from socket");
+    dieWithError("Error reading message from socket");
+}
+
+void tcpClient::sendPacket(const void *packet, size_t packetSize)
+{
+  if ((n = write(sockfd, packet, packetSize)) < 0)
+    dieWithError("Error sending packet to socket");
+}
+
+void tcpClient::receivePacket(void *buffer, size_t bufferSize)
+{
+  bzero(buffer, bufferSize);
+  if ((n = read(sockfd, buffer, bufferSize)) < 0)
+    dieWithError("Error receiving packet from socket");
 }
 
 void tcpClient::closeConnection()

@@ -37,16 +37,27 @@ tcpServer::~tcpServer()
 void tcpServer::sendMsg(const std::string& msg)
 {
   if ((n = write(newsockfd, msg.c_str(), msg.length())) < 0)
-    dieWithError("Error writing to Socket");
+    dieWithError("Error writing message to socket");
 }
 
-void tcpServer::readMsg(char buffer[BUFLEN])
+void tcpServer::receiveMsg(char buffer[BUFLEN])
 {
   bzero(buffer, BUFLEN);
   if ((n = read(newsockfd, buffer, BUFLEN)) < 0)
-    dieWithError("Error reading from socket");
-  // printf("-> Received packet from %s:%d\n", inet_ntoa(cli_addr.sin_addr), ntohs(cli_addr.sin_port));
-  // printf("-> Data: %s\n", buffer);
+    dieWithError("Error reading message from socket");
+}
+
+void tcpServer::sendPacket(const void *packet, size_t packetSize)
+{
+  if ((n = write(newsockfd, packet, packetSize)) < 0)
+    dieWithError("Error sending packet to socket");
+}
+
+void tcpServer::receivePacket(void *buffer, size_t bufferSize)
+{
+  bzero(buffer, bufferSize);
+  if ((n = read(newsockfd, buffer, bufferSize)) < 0)
+    dieWithError("Error receiving packet from socket");
 }
 
 void tcpServer::closeConnection()
