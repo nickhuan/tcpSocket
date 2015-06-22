@@ -24,16 +24,21 @@ enum FrameType {
   FRAME = 1,
   EVENT = 0
 };
+struct DavisKeypointPacketHeader
+{
+  FrameType flag = EVENT;
+  int number_of_keypoints = 0;
+};
 class DavisKeypointPacket
 {
 public:
 
-  FrameType flag = EVENT;
+  DavisKeypointPacketHeader header;
   vector<DavisKeypoint> keypoints_davis;
 
   DavisKeypointPacket(int n = 0)
   : keypoints_davis(n)
-  {}
+  { header.number_of_keypoints = n; }
 };
 
 int main( int argc, char** argv )
@@ -46,10 +51,20 @@ int main( int argc, char** argv )
   client.receiveMsg(buffer);
   cout << "message received: " << buffer << endl;
 
+  /* send packet to server */
   test testPacket;
-  struct test structTest;
+  testPacket.x = 52;
+  testPacket.y = 78;
+  testPacket.flag = 1;
   cout << "size of packet:" << sizeof(testPacket) << endl;
   client.sendPacket(&testPacket, sizeof(testPacket));
+
+  /* receive oacket from server */
+  DavisKeypointPacket* davisbuffer = (DavisKeypointPacket*) malloc(BUFLEN);
+  client.receivePacket(davisbuffer, BUFLEN);
+  cout << "DavisKeypointPacket.flag: " << davisbuffer->header.flag << endl;
+  // cout << "DavisKeypointPacket.at1.idx: " << davisbuffer->keypoints_davis.at(0).idx << endl;
+  // cout << "DavisKeypointPacket.at1.x: " << davisbuffer->keypoints_davis.at(0).coordinate.x << endl;
 
   client.closeConnection();
 
